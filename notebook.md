@@ -75,6 +75,13 @@ state结构图如下所示：
 
 ![image](https://github.com/Lizzie-LXR/WiFi/blob/main/IMG/state%E7%8A%B6%E6%80%81.png)
 
+### HSM
+从宏观上来讲，StateMachine机制是State模式在Android中的应用。HSM在传统的State模式基础上做了一些改变，使状态之间有了层次关系。这种层次关系和Java中父子类的派生和继承关系类似，都是由父类实现Generic的功能，而在子类实现一些特定的处理；但是，HSM中的父子类对应的是毫无派生关系的两个类，所以需要创建两个对象，而在Java中，创建一个子类对象即可完成父类的工作。hsm的机构图如下所示：
+
+![image](https://github.com/Lizzie-LXR/WiFi/blob/main/IMG/hsm%E7%BB%93%E6%9E%84.png)
+
+ClientModeImpl是WifiService的核心。
+
 
 
 
