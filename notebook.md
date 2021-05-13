@@ -32,7 +32,8 @@ IWifiManager是一个接口，IWifiManager, IWifiManager.Stub, IWifiManager.Stub
 IWifi
 
 ### WifiController
-高级别的
+高级别的WiFi状态机，它管理的状态是WiFi开关，或者说是作为STA/SoftAp/P2P角色
+
 ### WifiService 
 Java Framework中Wifi功能的总入口，负责Wifi功能的核心业务，由SystemServer启动的时候生成的ConnecttivityService创建。它是服务器端的实现，作为Wifi部分的核心，处理实际的驱动加载、扫描、链接、断开等命令，以及底层上报的事件。对于主动的命令控制，WiFi是一个简单的封装，针对来自客户端的控制命令，处理其它模块通过IWifiManager接口发送过来的远端WiFi操作，调用相应的WifiNative底层实现，负责启动关闭wpa_supplicant,启动和关闭WifiMonitor线程，把命令下发给wpa_supplicant以及更新WIFI的状态。
 
