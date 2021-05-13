@@ -5,7 +5,7 @@ AIDL是Android Interface Definition Language，即Android接口定义语言。�
 # Android WiFi 
 Android WiFi系统引入了wpa_supplicant，它的整个WiFi系统以wpa_supplicant为核心来定义上层用户接口和下层驱动接口。WiFi框架如下图所示：
 
-![image](https://github.com/Lizzie-LXR/WiFi/blob/main/IMG/wifi%E6%A1%86%E6%9E%B6.jpg)
+![image](https://github.com/Lizzie-LXR/WiFi/blob/main/IMG/android_o_wifi%E6%A1%86%E6%9E%B6.png)
 
 WiFi各层关系如下所示：
 ![image](https://github.com/Lizzie-LXR/WiFi/blob/main/IMG/wifi层.png)
@@ -13,13 +13,16 @@ WiFi各层关系如下所示：
 下面将一层一层进行介绍。
 
 ## WifiSettings
-操作WiFi的App
+WiFi App层
 
-## WiFi Framework
-Android系统用来维护WiFi整个逻辑的框架代码。
+### WifiSettings
+操作WiFi的App。
 
 ### WifiEnabler
 负责WiFi的开关逻辑。
+
+## WiFi Framework
+Android系统用来维护WiFi整个逻辑的框架代码。
 
 ### WifiManager
 WifiManager管理所有Wifi连接的基本API，WIFI的多数功能都以该类的方法的形式提供。其它所有应用都可以通过WifiManager来操作Wifi的各项功能，但是WifiManager本身不具备处理请求的能力，而是把所有的请求转发给WifServiceImpl来处理。WifiManager主要是由IWifiManager和IWifi组成。
@@ -28,6 +31,8 @@ IWifiManager是一个接口，IWifiManager, IWifiManager.Stub, IWifiManager.Stub
 
 IWifi
 
+### WifiController
+高级别的
 ### WifiService 
 Java Framework中Wifi功能的总入口，负责Wifi功能的核心业务，由SystemServer启动的时候生成的ConnecttivityService创建。它是服务器端的实现，作为Wifi部分的核心，处理实际的驱动加载、扫描、链接、断开等命令，以及底层上报的事件。对于主动的命令控制，WiFi是一个简单的封装，针对来自客户端的控制命令，处理其它模块通过IWifiManager接口发送过来的远端WiFi操作，调用相应的WifiNative底层实现，负责启动关闭wpa_supplicant,启动和关闭WifiMonitor线程，把命令下发给wpa_supplicant以及更新WIFI的状态。
 
@@ -43,13 +48,16 @@ WifiService的功能在WifiServiceImpl中实现。
 一个接口类，主要是提供一些native方法用于wifi framework层和WPAS通信。WifiNative的主要实现都在wifi.c函数里,WifiNative不过是将其封装,供framework层调用。
 
 ## JNI
-android_net_wifi_Wifi.cpp就是典型jni接口，通过它可以直接调用WiFi的硬件抽象层。
+android_net_wifi_Wifi.cpp就是典型jni接口，通过它可以直接调用WiFi的硬件抽象层。在Android O之后已禁用，改为HIDL方法。
 
-## WiFi Hardware
-HAL也叫wpa_supplicant适配层，是通用wpa_supplicant的封装。起着承上启下的作用，主要用于Framework与wpa_supplicant守护进程的通信，并向上层提供操作wpa_supplicant的接口，是wpa_supplicant的上层调用者，以供给WiFi框架层使用。主要是wifi.c和wifi.h两个文件。
+## HAL/HIDL
+HAL也叫wpa_supplicant适配层，是通用wpa_supplicant的封装，并向上层提供操作wpa_supplicant的接口，是wpa_supplicant的上层调用者，以供给WiFi框架层使用。
+HIDL的功能就是为了java可以直接调用到c/c++，wifi的framework层动用的Iwifi的类，Iwifi.hal文件定义了未实现的接口。 HIDL起着承上启下的作用，主要用于Framework与wpa_supplicant守护进程的通信。
 
 ## wpa_supplicant
-该层是Wifi FrameWork层的基石，也叫Wifi服务层。包含两个互相相关的开源项目wpa_supplicant和hostapd，它们将会生成两个可执行文件：wpa_supplicant和hostapd，分别为STA模式和AP模式时的守护进程。主要用来支持WEP，WPA/WPA2/WPA3和WAPI无线协议和加密认证的，而实际上的工作内容是通过socket与驱动交互，并上报数据给用户，而用户可以通过socket发送命令给wpa_supplicant调动驱动来对WiFi芯片进行操作。简单来说，wpa_supplicant是WiFi驱动和用户的中转站，并负责对协议和加密认证的支持。
+该层是Wifi FrameWork层的基石，也叫Wifi服务层。包含两个互相相关的开源项目wpa_supplicant和hostapd，它们将会生成两个可执行文件：wpa_supplicant和hostapd，分别为STA模式和AP模式时的守护进程。主要用来支持WEP，WPA/WPA2/WPA3和WAPI无线协议和加密认证的，而实际上的工作内容是通过socket与驱动交互，并上报数据给用户，而用户可以通过socket发送命令给wpa_supplicant调动驱动来对WiFi芯片进行操作。简单来说，wpa_supplicant是WiFi驱动和用户的中转站，并负责对协议和加密认证的支持。supplicant也是一个通道，理论上它自己可以管理STA工作了，现在Android也在基于它搞，
+最主要核心是为了用它的wifi加密认证相关的功能，其他功能其实没它也能弄。扫描，连接，密钥认证。P2P，SoftAP对比STA来说，有更多的逻辑是在supplicant或对等的hostapd中。
+以driver+supplicant来说：分析STA问题，绝大部分需要看driver，分析P2P，看supplicant比例多很多。
 
 ## kernel/Driver
 厂商提供的source。
