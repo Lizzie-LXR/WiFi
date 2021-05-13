@@ -462,7 +462,8 @@ public class ClientModeImpl extends StateMachine {
                 addState(mDisconnectingState, mConnectModeState);
                 addState(mDisconnectedState, mConnectModeState);
         // CHECKSTYLE:ON IndentationCheck
-
+	
+	
         setInitialState(mDefaultState);
 
         setLogRecSize(NUM_LOG_RECS_NORMAL);
