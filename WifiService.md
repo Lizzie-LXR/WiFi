@@ -367,7 +367,7 @@ public class ClientModeImpl extends StateMachine {
         mWifiPermissionsWrapper = mWifiInjector.getWifiPermissionsWrapper();
         //搜WiFi
         mWifiDataStall = mWifiInjector.getWifiDataStall();
-        //使用计算平均数据包速率的方法扩展WifiInfo
+        //使用计算平均数据包速率的方法扩展WifiInfo，WifiInfo用于存储当前连接的WiFi的信息，包括IP地址，ssid等
         mWifiInfo = new ExtendedWifiInfo(context);
         //跟踪wpa_supplicant的状态切换
         mSupplicantStateTracker = supplicantStateTracker;
@@ -378,9 +378,9 @@ public class ClientModeImpl extends StateMachine {
         //WiFi连接失败提醒
         mConnectionFailureNotifier = mWifiInjector.makeConnectionFailureNotifier(
                 mWifiConnectivityManager);
-        //描述网络链路的属性，不能用于改变网络
+        //描述网络链路的属性，包括IP地址，DNS地址，路由设置等，不能用于改变网络
         mLinkProperties = new LinkProperties();
-        //
+       
         mMcastLockManagerFilterController = new McastLockManagerFilterController();
         mActivityManager = context.getSystemService(ActivityManager.class);
 
@@ -391,12 +391,12 @@ public class ClientModeImpl extends StateMachine {
         mLastSignalLevel = -1;
 
         mCountryCode = countryCode;
-
+	//用于计算连接wifi网络的分数并将其报告给相关的网络代理
         mWifiScoreReport = new WifiScoreReport(mWifiInjector.getScoringParams(), mClock,
                 mWifiMetrics, mWifiInfo, mWifiNative, mBssidBlocklistMonitor,
                 mWifiInjector.getWifiThreadRunner(), mWifiInjector.getDeviceConfigFacade(),
                 mContext, looper, mFacade);
-
+	//网络性能判断（能否上网等）
         NetworkCapabilities.Builder builder = new NetworkCapabilities.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -414,7 +414,7 @@ public class ClientModeImpl extends StateMachine {
         }
         mNetworkCapabilitiesFilter = builder.build();
 
-        // Make the network factories.
+        //创建NetworkAgent对象，
         mNetworkFactory = mWifiInjector.makeWifiNetworkFactory(
                 mNetworkCapabilitiesFilter, mWifiConnectivityManager);
         // We can't filter untrusted network in the capabilities filter because a trusted
