@@ -4,6 +4,7 @@ WifiService的初始化分为两个部分，WifiService的初始化和WifiManage
 
 ## 1.1  WifiService的初始化流程
 
+### 1.1.1  Wifiservice代码分析
 WifiService的初始化流程是在SystemServer进程中，通过SystemServiceManager将WiFi的主服务WifiService启动。
 
 ```
@@ -58,7 +59,7 @@ WifiServiceImpl的属性可以看出是一个服务的实现类，继承了IWifi
 public class WifiServiceImpl extends BaseWifiService {}
 public class BaseWifiService extends IWifiManager.Stub {}
 ```
-WifiServiceImpl的初始化流程如下所示：
+WifiServiceImpl的初始化流程如下所示，在这里初始化各种与WIFI管理有关的辅助类：
 ```
 @WifiServiceImpl.java
 public class WifiServiceImpl extends BaseWifiService {
@@ -73,7 +74,9 @@ public class WifiServiceImpl extends BaseWifiService {
 }
     
 ```
-在这里初始化各种与WIFI管理有关的辅助类，其中包含最重要的一个就是WIFI的状态机ClientModeImpl，他是整个WiFi机制的核心。状态机的初始化流程如下：
+
+### 1.1.2  ClientModeImpl代码分析
+WifiServiceImpl的初始化，其中包含最重要的一个就是WIFI的状态机ClientModeImpl，他是整个WiFi机制的核心。状态机的初始化流程如下：
 ```
 @ClientModeImpl.java
 public class ClientModeImpl extends StateMachine {
@@ -83,10 +86,15 @@ public class ClientModeImpl extends StateMachine {
     
     private final ExtendedWifiInfo mWifiInfo;
     
+    
+    
+```
 
 到此，系统启动完成，WifiService服务已正常运行。
 
-##
+
+
+
 
 
 
