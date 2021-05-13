@@ -68,6 +68,13 @@ WiFi是通过Binder进行通信的，Binder是连接App和SystemServer的桥梁�
 
 WifiManager只是系统为App提供的接口，返回的实际对象类型是IWifiManager.Stub.Proxy，将WifiManager方法的参数序列化到Parcel，再经Binder发送给SystemServer进程。SystemServer内的WifiService收App传来的WifiManager调用，完成实际工作。这样，实际和下层通信的工作就由App转移到了SystemServer进程（WifiService对象）。
 
+## Android HSM
+### state模式
+state的创建是为了一个对象在其内部状态改变时改变它的行为，对象看起来修改了它的类。Command模式是将命令请求封装成一个为对象，将不同的请求对象参数化以达到同样的调用执行不同的命令；同样State模式是将对象的状态封装成一个对象，是在不同的状态下同样的调用执行不同的操作。用于 1.一个对象的行为取决于它的状态，并且它必须在运行时刻根据状态来改变它的行为；2.一个操作中含有庞大的分支条件语句，且这些分支依赖于该对象的状态。
+state结构图如下所示：
+
+![image](https://github.com/Lizzie-LXR/WiFi/blob/main/IMG/state%E7%8A%B6%E6%80%81.png)
+
 
 
 
