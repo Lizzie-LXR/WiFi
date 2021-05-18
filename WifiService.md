@@ -577,9 +577,12 @@ public class ClientModeImpl extends StateMachine {
         });
     }
  ```   
-    
-    
-
+以上就是WifiService的全部初始化过程，其主要过程分为以下四个部分：
+        1、在SystemServer中启动WifiService；
+        2、在WifiService启动过程中创建并初始化WifiServiceImpl和WifiInjector；
+        3、在WifiServiceImpl初始化过程中创建并初始化ClientModeImpl对象；
+        4、在ClientModeImpl初始化过程中创建各种状态机并在WifiInjector中启动他们；
+	
 到此，系统启动完成，WifiService服务已正常运行。
 
 到这里，Wi-Fi服务，WifiNative, Wifi HAL Service, wpa_supplicant, wlan driver，wlan firmware, ConnectivityServcie, NetworkStack, DNSResolver都初始化好了，剩下的就是等待客户端调用。
